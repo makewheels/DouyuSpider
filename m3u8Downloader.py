@@ -1,8 +1,8 @@
 # m3u8下载器
-import requests
 import os
 import threading
-import _thread
+
+import requests
 
 
 # 获取基地址
@@ -205,28 +205,3 @@ def download(m3u8Url, savePath, filename):
     pieceCachePath = ''
     finalFilePath = ''
     missionList.clear()
-
-
-"""
-    pieceIndex=0
-    for pieceUrl in pieceUrlList:
-        current=pieceIndex+1
-        percent=round(current/pieceAmount*100,1)
-        print('download piece: '+str(current)+' / '+str(pieceAmount)+'  '+str(percent)+'%')
-        downloadSingleFile(baseUrl+pieceUrl,pieceCachePath,pieceIndex)
-        pieceIndex=pieceIndex+1
-
-"""
-
-"""
-url='https://vodhls1.douyucdn.cn/record/HLS/live-288016rlols5_3000p/live-288016rlols5_3000p--20191019012955.m3u8?k=2414bb0d90ff568dc9fa6b9b5dd4421f&t=5daac3ba&nlimit=5&u=0&ct=web&vid=11382069&pt=2&cdn=ws&d=220b9fe4e764830f249fa33900041501'
-savePath='C:/Users/Administrator/Downloads/down/savepath1'
-filename='out.ts'
-if os.path.exists(savePath)==False:
-    os.makedirs(savePath)
-download(
-    m3u8Url=url,
-    savePath=savePath,
-    filename=filename
-)
-"""

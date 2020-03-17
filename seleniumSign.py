@@ -7,8 +7,8 @@ import json
 print('init selenium')
 driver = webdriver.Chrome()
 
-deviceId = '715ec34e5d4f97353617712100071501'
-acf_auth='ed25kNvkOs3WZ629%2FXjHi%2BttxIPrxik8b8MP2XA8UGos%2FZh5KBiHa7nn%2B4kloVCqATAPrATGRjb51QbUQgnPzHUNK9ToMyfsU8PgwFzFcqlVUEuZpyel'
+deviceId = 'd8bc4db96bc801d212a9918c00071501'
+acf_auth='e709%2B3qCBUn7OZhKDduj%2F%2FhvIrwYcGLW7C%2F3J8N2V8KFacIltyAygGlxBsTn11rqxMo41xE6zyN6pobaDtROLNf%2Fq3Rkrs4gfW0krZP7Rt08r7RpR%2Fu8'
 
 def getM3u8Url(videoId,pointId):
     url='https://v.douyu.com/show/'+videoId

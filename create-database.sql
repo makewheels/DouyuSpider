@@ -1,0 +1,45 @@
+CREATE DATABASE IF NOT EXISTS`douyu_download`;
+USE `douyu_download`;
+
+DROP TABLE IF EXISTS `douyu_show`;
+
+CREATE TABLE `douyu_show` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `upId` VARCHAR(255) DEFAULT NULL,
+  `show_id` VARCHAR(255) DEFAULT NULL,
+  `start_time` VARCHAR(255) DEFAULT NULL,
+  `title` VARCHAR(255) DEFAULT NULL,
+  `cut_num` INT(11) DEFAULT NULL,
+  `fan_num` INT(11) DEFAULT NULL,
+  `re_num` INT(11) DEFAULT NULL,
+  `showPage` INT(11) DEFAULT NULL,
+  `showLimit` INT(11) DEFAULT NULL,
+  `startTimestamp` TIMESTAMP NULL DEFAULT NULL,
+  `startYear` INT(11) DEFAULT NULL,
+  `startMonth` INT(11) DEFAULT NULL,
+  `startDay` INT(11) DEFAULT NULL,
+  `isReplyDownload` INT(11) DEFAULT NULL,
+  `createTime` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB;
+
+DROP TABLE IF EXISTS `douyu_video`;
+
+CREATE TABLE `douyu_video` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `upId` VARCHAR(255) DEFAULT NULL,
+  `show_id` VARCHAR(255) DEFAULT NULL,
+  `indexOfShow` INT(11) DEFAULT NULL,
+  `title` VARCHAR(255) DEFAULT NULL,
+  `video_type` INT(11) DEFAULT NULL,
+  `start_time` VARCHAR(255) DEFAULT NULL,
+  `hash_id` VARCHAR(255) DEFAULT NULL,
+  `video_str_duration` VARCHAR(255) DEFAULT NULL,
+  `point_id` VARCHAR(255) DEFAULT NULL,
+  `json` VARCHAR(2000) DEFAULT NULL,
+  `videoPage` INT(11) DEFAULT NULL,
+  `videoLimit` INT(11) DEFAULT NULL,
+  `isDownload` INT(11) DEFAULT NULL,
+  `createTime` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB ;

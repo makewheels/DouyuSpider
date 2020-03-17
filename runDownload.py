@@ -10,7 +10,7 @@ upId = '0rEdlk3MgwNM'
 # 指定年月日
 startYear = 2018
 startMonth = 8
-startDay = 3
+startDay = 1
 # 指定basePath
 basePath = 'D:/down'
 # 连接数据库
@@ -18,7 +18,7 @@ connect = db.getMysqlConnect()
 cursor = connect.cursor()
 # 指定年月日查数据库的douyu_show表，获取showId
 sql = "SELECT startTimestamp,show_id FROM douyu_show WHERE startYear=%d and startMonth=%d and startDay=%d and upId='%s'" % (
-startYear, startMonth, startDay, upId)
+    startYear, startMonth, startDay, upId)
 cursor.execute(sql)
 showResults = cursor.fetchall()
 showList = []
@@ -31,7 +31,7 @@ for show in showList:
     # 根据showId查video
     showId = show['show_id']
     sql = "SELECT start_time,hash_id,point_id,json FROM douyu_video WHERE show_id='%s' and video_type=0 and upId='%s'" % (
-    showId, upId)
+        showId, upId)
     cursor.execute(sql)
     videoResults = cursor.fetchall()
     for row in videoResults:
