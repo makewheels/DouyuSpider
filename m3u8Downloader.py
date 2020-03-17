@@ -51,9 +51,14 @@ def getPieceCachePath(savePath, folderName):
 
 # 下载一个文件
 def downloadSingleFile(url, path):
-    r = requests.get(url)
-    with open(path, 'wb') as code:
-        code.write(r.content)
+    try:
+        r = requests.get(url)
+        with open(path, 'wb') as code:
+            code.write(r.content)
+    except:
+        r = requests.get(url)
+        with open(path, 'wb') as code:
+            code.write(r.content)
 
 
 # 合并碎片

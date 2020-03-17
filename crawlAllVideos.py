@@ -125,6 +125,6 @@ count = firstVideoShow['data']['count']
 # 计算总页数
 totalPage = math.ceil(count / showLimit)
 # 遍历每一页，发请求，保存videoInfo
-for page in range(1, totalPage + 1):
+for page in range(330, totalPage + 1):
     videoShowList = getShowInfo(page)['data']['list']
     saveShowsAndVideos(videoShowList, upId, page)
