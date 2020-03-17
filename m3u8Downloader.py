@@ -85,7 +85,7 @@ def mergePieces(fPath, pCachePath):
     for eachPieceFile in pieceFilePathList:
         os.remove(eachPieceFile)
     os.rmdir(pCachePath)
-    print('merge file finish')
+    print('merge ts pieces finish')
 
 
 # 锁
@@ -167,7 +167,7 @@ class DownloadThread(threading.Thread):
         # 循环接新任务，如果有任务
         while mission != None:
             # 执行下载
-            print(threading.currentThread().getName() + ' downloading ' + str(mission['index']))
+            print(threading.currentThread().getName() + ' downloading ' + str(mission['index']) + " " + mission['path'])
             downloadSingleFile(mission['url'], mission['path'])
             # 提交任务
             submitMission(mission)
