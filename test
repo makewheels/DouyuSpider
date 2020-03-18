@@ -25,17 +25,17 @@ def mergeFiles(videoFilePathList, finalPath):
             outfile.write(infile.read(chunkSize))
             print("merge videos " + str(round(bytesCopied / fileSize * 100, 1)) + "%")
             bytesCopied += chunkSize
-            infile.seek(bytesCopied)
         # 再复制最后剩下的
         outfile.write(infile.read(fileSize % chunkSize))
         print("merge videos " + str(round(bytesCopied / fileSize * 100, 1)) + "%")
         infile.close()
     # 合并完成
+    outfile.flush()
     outfile.close()
     print("merge videos finish!" + finalPath)
     # 删除之前的videos
-    for each in videoFilePathList:
-        os.remove(each)
+    # for each in videoFilePathList:
+    #     os.remove(each)
 
 
 videoFilePathList = [

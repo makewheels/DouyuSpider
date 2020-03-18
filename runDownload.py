@@ -1,5 +1,4 @@
 # 执行下载
-import math
 import os
 
 import db
@@ -30,38 +29,17 @@ def getShowIdList():
 
 # 合并文件
 def mergeFiles(videoFilePathList, finalPath):
-    # 如果只有一个文件，重命名返回
-    if (len(videoFilePathList) == 1):
-        os.rename(videoFilePathList[0], finalPath)
+    if len(videoFilePathList) == 0:
         return
-    outfile = open(finalPath, 'wb')
-    # 遍历每一个视频合并
+    cmd = 'ffmpeg -y'
     for each in videoFilePathList:
-        chunkSize = 1024 * 1024 * 10
-        infile = open(each, 'rb')
-        print(each)
-        # 文件大小
-        fileSize = os.path.getsize(each)
-        # 已复制大小
-        bytesCopied = 0
-        # 次数
-        times = math.ceil(fileSize / chunkSize)
-        # 逐个块复制
-        for i in range(times):
-            outfile.write(infile.read(chunkSize))
-            print("merge videos " + str(round(bytesCopied / fileSize * 100, 1)) + "%")
-            bytesCopied += chunkSize
-            infile.seek(bytesCopied)
-        # 再复制最后剩下的
-        outfile.write(infile.read(fileSize % chunkSize))
-        print("merge videos " + str(round(bytesCopied / fileSize * 100, 1)) + "%")
-        infile.close()
-    # 合并完成
-    outfile.close()
-    print("merge videos finish!" + finalPath)
+        cmd = cmd + ' -i ' + each
+    cmd = cmd + ' -c copy ' + finalPath.replace('.ts', '.mp4')
+    print(cmd)
+    os.system(cmd)
     # 删除之前的videos
-    for each in videoFilePathList:
-        os.remove(each)
+    # for each in videoFilePathList:
+    #     os.remove(each)
 
 
 # 程序从这里开始
