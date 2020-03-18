@@ -91,6 +91,6 @@ for showId in showIdList:
     # 合并video为一个show（可选项），文件命名按照show的日期
     mergeFiles(videoFilePathList, finalPath)
     # 这个show下载完成后，更新数据库，标记为已下载
-    cursor.execute("update douyu_show set isReplyDownload=1 where show_id='" + showId + "'")
+    cursor.execute("update douyu_show set isReplyDownload=1 where show_id='" + str(showId) + "'")
     connect.commit()
     # 下载一个show至此完成
