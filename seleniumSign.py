@@ -8,7 +8,7 @@ print('init selenium')
 driver = webdriver.Chrome()
 
 deviceId = '1cebd38f0e9643024ff4406700071501'
-acf_auth = 'eed6RR%2F3qN2sm2ZcZxSi6IICZGV%2BQamBFcGL64hOybGnvK%2Bf9iGcmbmlJQ211m2ZDz%2B9GZ9sVkKgDXYbJQGdWDSzZbRC4jqhv906pR9KLCDX7bzd%2B4n1'
+acf_auth = '4d7e0P7bPvIuW9kx5AFjqblympFlgadDdRbgBzIo%2Fl%2BjbSQdHD%2Bn%2F9IVpgQgrr1NPX2Dhsnl9FWE3PXCJOmpxMRHuWU7Nf%2FCSdyR5enhClp%2Bsof05U4r'
 
 
 def getM3u8Url(hash_id, point_id):

@@ -1,47 +1,26 @@
 # 合并文件
-import math
 import os
 
 
+# 合并文件
 def mergeFiles(videoFilePathList, finalPath):
-    # 如果只有一个文件，重命名返回
-    if (len(videoFilePathList) == 1):
-        os.rename(videoFilePathList[0], finalPath)
+    if len(videoFilePathList) == 0:
         return
-    outfile = open(finalPath, 'wb')
-    # 遍历每一个视频合并
+    cmd = 'ffmpeg -y -i \"concat:'
     for each in videoFilePathList:
-        chunkSize = 1024 * 1024 * 10
-        infile = open(each, 'rb')
-        print(each)
-        # 文件大小
-        fileSize = os.path.getsize(each)
-        # 已复制大小
-        bytesCopied = 0
-        # 次数
-        times = math.ceil(fileSize / chunkSize)
-        # 逐个块复制
-        for i in range(times):
-            outfile.write(infile.read(chunkSize))
-            print("merge videos " + str(round(bytesCopied / fileSize * 100, 1)) + "%")
-            bytesCopied += chunkSize
-        # 再复制最后剩下的
-        outfile.write(infile.read(fileSize % chunkSize))
-        print("merge videos " + str(round(bytesCopied / fileSize * 100, 1)) + "%")
-        infile.close()
-    # 合并完成
-    outfile.flush()
-    outfile.close()
-    print("merge videos finish!" + finalPath)
+        cmd = cmd + each + '|'
+    cmd = cmd + '\" -acodec copy -vcodec copy -absf aac_adtstoasc ' + finalPath.replace('.ts', '.mp4')
+    print(cmd)
+    os.system(cmd)
     # 删除之前的videos
     # for each in videoFilePathList:
     #     os.remove(each)
 
 
 videoFilePathList = [
-    'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts.video0',
-    'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts.video1',
-    'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts.video2'
+    'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts.video0.ts',
+    'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts.video1.ts',
+    'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts.video2.ts'
 ]
-finalPath = 'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19.ts'
+finalPath = 'D:/douyu_download/0rEdlk3MgwNM/2016-12/2016-12-19_19111.mp4'
 mergeFiles(videoFilePathList, finalPath)

@@ -31,15 +31,15 @@ def getShowIdList():
 def mergeFiles(videoFilePathList, finalPath):
     if len(videoFilePathList) == 0:
         return
-    cmd = 'ffmpeg -y'
+    cmd = 'ffmpeg -y -i \"concat:'
     for each in videoFilePathList:
-        cmd = cmd + ' -i ' + each
-    cmd = cmd + ' -c copy ' + finalPath.replace('.ts', '.mp4')
+        cmd = cmd + each + '|'
+    cmd = cmd + '\" -c copy ' + finalPath.replace('.ts', '.mp4')
     print(cmd)
     os.system(cmd)
     # 删除之前的videos
-    # for each in videoFilePathList:
-    #     os.remove(each)
+    for each in videoFilePathList:
+        os.remove(each)
 
 
 # 程序从这里开始
@@ -90,6 +90,6 @@ for showId in showIdList:
     # 合并video为一个show（可选项），文件命名按照show的日期
     mergeFiles(videoFilePathList, finalPath)
     # 这个show下载完成后，更新数据库，标记为已下载
-    # cursor.execute("update douyu_show set isReplyDownload=1 where show_id='" + showId + "'")
-    # connect.commit()
+    cursor.execute("update douyu_show set isReplyDownload=1 where show_id='" + showId + "'")
+    connect.commit()
     # 下载一个show至此完成
