@@ -54,9 +54,10 @@ for showId in showIdList:
     show = cursor.fetchone()
     start_time = show[3]
     # 先看这个回放是是不是已经下载过了
-    isReplayDownload = show[12]
+    isReplayDownload = show[14]
     # 如果已经下载过了，则跳过
     if isReplayDownload == 1:
+        print("skip show " + str(showId))
         continue
     # 截取时间
     year = start_time[0:4]
