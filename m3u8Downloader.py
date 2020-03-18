@@ -3,6 +3,7 @@ import os
 import threading
 
 import requests
+import time
 
 
 # 获取基地址
@@ -55,10 +56,12 @@ def downloadSingleFile(url, path):
         r = requests.get(url)
         with open(path, 'wb') as code:
             code.write(r.content)
+            code.flush()
     except:
         r = requests.get(url)
         with open(path, 'wb') as code:
             code.write(r.content)
+            code.flush()
 
 
 # 合并碎片
@@ -94,14 +97,24 @@ threadLock = threading.Lock()
 # state: 0表示未下载，1表示正在下载，2表示已完成
 missionList = []
 
+# 下载进度
+progress = {'downloadBytes': 0, 'startTime': 0}
+
+
+def getProgress():
+    return progress
+
 
 # 初始化任务
 def initDownloadMission(pieceUrlList, pieceCachePath):
+    progress['downloadBytes'] = 0
+    progress['startTime'] = time.time()
     for index, pieceUrl in enumerate(pieceUrlList):
         missionList.append({
             'index': index,
             'url': pieceUrl,
             'path': pieceCachePath + '/' + str(index),
+            'size': 0,
             'state': 0
         })
 
@@ -141,7 +154,7 @@ def submitMission(mission):
             finishCount = finishCount + 1
     # 下载完成度
     percent = round(finishCount / len(missionList) * 100, 1)
-    print(' ' + str(percent) + '%', )
+    print(str(percent) + '%', end='')
     # 释放锁
     threadLock.release()
 
@@ -169,8 +182,18 @@ class DownloadThread(threading.Thread):
             # 执行下载
             print(threading.currentThread().getName() + ' downloading ' + str(mission['index']) + " " + mission['path'])
             downloadSingleFile(mission['url'], mission['path'])
+            # 设置文件大小，用于统计速度
+            mission['size'] = os.path.getsize(mission['path'])
             # 提交任务
             submitMission(mission)
+            # 计算下载速度
+            progress = getProgress()
+            downloadBytes = progress['downloadBytes']
+            downloadBytes = downloadBytes + mission['size']
+            progress['downloadBytes'] = downloadBytes
+            timeCost = time.time() - progress['startTime']
+            speed = downloadBytes / 1024 / timeCost
+            print(" " + "\033[1;34;42m " + str(int(speed)) + " K/S \033[0m")
             # 继续获取新任务
             mission = getPieceMission()
 
