@@ -66,7 +66,6 @@ def downloadSingleFile(url, path):
 
 # 合并碎片
 def mergePieces(fPath, pCachePath):
-    print(fPath)
     pAmount = len(missionList)
     # 先拿到碎片文件列表
     pieceFilePathList = []
@@ -75,19 +74,28 @@ def mergePieces(fPath, pCachePath):
     # 执行合并
     finalFile = open(fPath, 'wb')
     # 遍历每个碎片
+    # for pieceFilePath in pieceFilePathList:
+    #     with open(pieceFilePath, 'rb') as pieceFile:
+    #         current = int(os.path.basename(pieceFilePath)) + 1
+    #         total = pAmount
+    #         percent = round(current / total * 100, 1)
+    #         print('merge piece: ' + str(current) + ' / ' + str(total) + '  ' + str(percent) + '%')
+    #         content = pieceFile.read()
+    #         finalFile.write(content)
+    # finalFile.close()
+
+    cmd = 'ffmpeg -y -i \"concat:'
     for pieceFilePath in pieceFilePathList:
-        with open(pieceFilePath, 'rb') as pieceFile:
-            current = int(os.path.basename(pieceFilePath)) + 1
-            total = pAmount
-            percent = round(current / total * 100, 1)
-            print('merge piece: ' + str(current) + ' / ' + str(total) + '  ' + str(percent) + '%')
-            content = pieceFile.read()
-            finalFile.write(content)
-    finalFile.close()
+        cmd = cmd + pieceFilePath + '|'
+    cmd = cmd + '\" -acodec copy -vcodec copy -absf aac_adtstoasc ' + fPath.replace('\\', '/')
+    print(cmd)
+    os.system(cmd)
+
     # 删除碎片缓存文件夹
-    for eachPieceFile in pieceFilePathList:
-        os.remove(eachPieceFile)
-    os.rmdir(pCachePath)
+    # for eachPieceFile in pieceFilePathList:
+    #     os.remove(eachPieceFile)
+    # 删除缓存文件夹
+    # os.rmdir(pCachePath)
     print('merge ts pieces finish')
 
 
