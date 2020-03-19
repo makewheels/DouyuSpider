@@ -108,8 +108,8 @@ def mergePieces(fPath, pCachePath):
     # 删除碎片
     for mission in missionList:
         tsPath = mission['path']
-        os.remove("delete ts piece: " + tsPath)
-        print(tsPath)
+        os.remove(tsPath)
+        print("delete ts piece: " + tsPath)
     # 删除tsFileList文件
     os.remove(pCachePath + '/tsFileList.txt')
     # 删除缓存文件夹
