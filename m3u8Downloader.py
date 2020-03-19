@@ -19,14 +19,23 @@ def getBaseUrl(m3u8Url):
 
 
 # 发请求获取m3u8碎片列表
-def getPieceUrlList(baseUrl, m3u8Url):
+def getPieceUrlList(baseUrl, m3u8Url, pieceCachePath):
     m3u8File = requests.get(m3u8Url).text
+    # 保存m3u8文件
+    # with open(pieceCachePath + '/playlist.m3u8', 'w') as playlistFile:
+    #     code.write(playlistFile)
+    #     playlistFile.flush()
     lines = m3u8File.splitlines()
     pieceUrlList = []
+    # 保存文件列表
+    tsFileList = open(pieceCachePath + '/tsFileList.txt', 'w')
+    # 遍历每一行
     for line in lines:
         # 不以#开头，并且不是空行
         if line.startswith('#') == False and line != '':
             pieceUrlList.append(baseUrl + line)
+            tsFileList.write("file '" + line[0:line.index('?')] + '\'\n')
+            tsFileList.flush()
     return pieceUrlList
 
 
@@ -84,18 +93,27 @@ def mergePieces(fPath, pCachePath):
     #         finalFile.write(content)
     # finalFile.close()
 
-    cmd = 'ffmpeg -y -i \"concat:'
-    for pieceFilePath in pieceFilePathList:
-        cmd = cmd + pieceFilePath + '|'
-    cmd = cmd + '\" -acodec copy -vcodec copy -absf aac_adtstoasc ' + fPath.replace('\\', '/')
+    # cmd = 'ffmpeg -y -i \"concat:'
+    # for pieceFilePath in pieceFilePathList:
+    #     cmd = cmd + pieceFilePath + '|'
+    # cmd = cmd + '\" -acodec copy -vcodec copy -absf aac_adtstoasc ' + fPath.replace('\\', '/')
+    # print(cmd)
+    # os.system(cmd)
+
+    # ffmpeg -i "index.m3u8" -codec copy output.mp4
+    cmd = "ffmpeg -y -f concat -i " + pCachePath + "/\"tsFileList.txt\" -c copy " + fPath
     print(cmd)
     os.system(cmd)
 
-    # 删除碎片缓存文件夹
-    # for eachPieceFile in pieceFilePathList:
-    #     os.remove(eachPieceFile)
+    # 删除碎片
+    for mission in missionList:
+        tsPath = mission['path']
+        os.remove("delete ts piece: " + tsPath)
+        print(tsPath)
+    # 删除tsFileList文件
+    os.remove(pCachePath + '/tsFileList.txt')
     # 删除缓存文件夹
-    # os.rmdir(pCachePath)
+    os.rmdir(pCachePath)
     print('merge ts pieces finish')
 
 
@@ -118,10 +136,13 @@ def initDownloadMission(pieceUrlList, pieceCachePath):
     progress['downloadBytes'] = 0
     progress['startTime'] = time.time()
     for index, pieceUrl in enumerate(pieceUrlList):
+        # 这里改一下ts碎片文件名，按照m3u8索引文件里的名字来
+        relativeUrl = pieceUrl.replace(getBaseUrl(pieceUrl), '')
+        filename = relativeUrl[0:relativeUrl.index('?')]
         missionList.append({
             'index': index,
             'url': pieceUrl,
-            'path': pieceCachePath + '/' + str(index),
+            'path': pieceCachePath + '/' + filename,
             'size': 0,
             'state': 0
         })
@@ -197,26 +218,37 @@ class DownloadThread(threading.Thread):
             # 计算下载速度
             progress = getProgress()
             downloadBytes = progress['downloadBytes']
-            downloadBytes = downloadBytes + mission['size']
+            tsSize = mission['size']
+            downloadBytes = downloadBytes + tsSize
             progress['downloadBytes'] = downloadBytes
             timeCost = time.time() - progress['startTime']
             speed = downloadBytes / 1024 / timeCost
-            print(" " + "\033[1;34;42m " + str(int(speed)) + " K/S \033[0m")
+            # 速度
+            print(" " + "\033[1;34;42m " + str(int(speed)) + " K/S \033[0m", end='')
+            # ts文件大小
+            print("  " + str(int(tsSize / 1024)) + "KB", end='')
+            # video已下载总大小
+            print("  " + str(int(downloadBytes / 1024 / 1024)) + "MB", end='')
+            # video耗时
+            timeCostInSecond = int(timeCost)
+            minute = int(timeCostInSecond / 60)
+            second = int(timeCostInSecond % 60)
+            print("  " + str(minute) + ":" + str(second))
             # 继续获取新任务
             mission = getPieceMission()
 
 
-# 下载，m3u8Url，保存路径，最终文件名
+# 下载视频，m3u8Url，保存路径，最终文件名
 def download(m3u8Url, savePath, filename):
-    baseUrl = getBaseUrl(m3u8Url)
-    # 拿到下载文件URL列表
-    pieceUrlList = getPieceUrlList(baseUrl, m3u8Url)
-    # 碎片数量
-    pieceAmount = len(pieceUrlList)
-    # 文件夹分隔符替换
+    # 文件分隔符替换
     savePath = savePath.replace('\\', '/')
     # 获得碎片缓存文件夹路径
     pieceCachePath = getPieceCachePath(savePath, filename + '_cache')
+    baseUrl = getBaseUrl(m3u8Url)
+    # 拿到下载文件URL列表
+    pieceUrlList = getPieceUrlList(baseUrl, m3u8Url, pieceCachePath)
+    # 碎片数量
+    pieceAmount = len(pieceUrlList)
     # 最终文件路径
     finalFilePath = savePath + '/' + filename
     # 开启多线程下载每个碎片

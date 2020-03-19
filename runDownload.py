@@ -83,10 +83,10 @@ for showId in showIdList:
         # 获得m3u8下载地址
         m3u8Url = seleniumSign.getM3u8Url(hash_id, point_id)
         print(m3u8Url)
-        videoFilePathList.append(finalPath + ".video" + str(video_part) + ".mp4")
+        videoFilePathList.append(finalPath + ".video" + str(video_part) + ".ts")
         # 调用函数下载每个video
         # /[upId]/2018-08/2018-08-01_19.ts
-        m3u8Downloader.download(m3u8Url, folder, filename + ".video" + str(video_part) + ".mp4")
+        m3u8Downloader.download(m3u8Url, folder, filename + ".video" + str(video_part) + ".ts")
         video_part = video_part + 1
     # 合并video为一个show（可选项），文件命名按照show的日期
     mergeFiles(videoFilePathList, finalPath)
